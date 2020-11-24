@@ -2,13 +2,13 @@
   "dogs": [
     {
       "id": 1,
-      "name": "Baby",
-      "breed": "Scottish Deerhound",
-      "sex": "female"
+      "name": "Doggie",
+      "breed": "Irish Spaniel",
+      "sex": "male"
     },
     {
       "id": 2,
-      "name": "Teddy",
+      "name": "TeddyBoo",
       "breed": "Rhodesian Ridgeback",
       "sex": "female"
     },
@@ -26,7 +26,7 @@
     },
     {
       "id": 5,
-      "name": "Gracie",
+      "name": "Graciey",
       "breed": "Miniature Pinscher",
       "sex": "female"
     },

@@ -1,9 +1,11 @@
 const dogUrl = "http://localhost:3000/dogs"
 
 document.addEventListener('DOMContentLoaded', () => {
+    const form = document.querySelector('#dog-form')
+    form.addEventListener('submit', (e) => {updateDog(e)})
     fetchDogList()
 
-})
+
 
 function fetchDogList(){
     fetch(dogUrl)
@@ -20,12 +22,13 @@ function showDogs(dogArray){
 function renderDog(dogObj){
     const tableBody = document.querySelector('#table-body')
     const tr = document.createElement('tr')
+    tr.dataset.id = dogObj.id
     const tdName = document.createElement('td')
-    tdName.innerText = `${dogObj.name}`
+    tdName.innerText = dogObj.name
     const tdBreed = document.createElement('td')
-    tdBreed.innerText = `${dogObj.breed}`
+    tdBreed.innerText = dogObj.breed
     const tdSex = document.createElement('td')
-    tdSex.innerText = `${dogObj.sex}`
+    tdSex.innerText = dogObj.sex
     const tdBtn = document.createElement('td')
     const editBtn = document.createElement("button")
     editBtn.innerText = "Edit"
@@ -37,11 +40,13 @@ function renderDog(dogObj){
     tdBtn.appendChild(editBtn)
     tableBody.appendChild(tr)
 
-    editBtn.addEventListener('click' , (e) => populateForm(e, dogObj))
+    editBtn.addEventListener('click' , () => populateForm(dogObj))
 }
 //Clicking on the edit button next to a dog, should populate
 //the top form with that dog's current information
-function populateForm(event, obj){
+function populateForm(obj){
+
+    //const form = document.querySelector
     const nameInput = document.querySelector('input[name="name"]')
     const breedInput = document.querySelector('input[name="breed"]')
     const sexInput = document.querySelector('input[name="sex"]')
@@ -49,32 +54,32 @@ function populateForm(event, obj){
     nameInput.value = obj.name
     breedInput.value = obj.breed
     sexInput.value = obj.sex
+    form.dataset.id = obj.id
 
-    //adding a listener to the form
-    const form = document.querySelector('#dog-form')
-    form.addEventListener('submit', () => {
-        const name = nameInput.value
-        const breed = breedInput.value
-        const sex = sexInput.value
-        updateDog(name, breed, sex, obj.id)
-    })
 }
 
-function updateDog(n, b, s, id) {
-    const dogInfo = {
-        name: n,
-        breed: b,
-        sex: s
-    }
+function updateDog(e) {
+    e.preventDefault()
+    const tr = document.querySelector(`tr[data-id="${e.target.dataset.id}"]`).children
 
-    fetch(`${dogUrl}/${id}`, {
+    fetch(`${dogUrl}/${e.target.dataset.id}`, {
         method: 'PATCH',
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json"
         },
-        body: JSON.stringify(dogInfo)
+        body: JSON.stringify({
+            "name": e.target.name.value,
+            "breed": e.target.breed.value,
+            "sex": e.target.sex.value
+        })
       })
       .then(res=>res.json())
+      .then(data => {
+        tr[0].innerText = data.name
+        tr[1].innerText = data.breed
+        tr[2].innerText = data.sex
+      })
 }
 
+})
